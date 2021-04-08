@@ -15,6 +15,10 @@ class Node:
     def __str__(self):
         return f'{self.number} {self.left} {self.right}'
 
+    def set_lr(self, left, right):
+        self.left = left
+        self.right = right
+
     def _operate(self, other, operator_):
         if isinstance(other, self.__class__):
             return operator_(self.number, other.number)
@@ -55,27 +59,24 @@ def solution():
 
     root = int(input())
 
-    # callculate left and right
-    left_counter, right_counter = 0, N * 2 + 1
+    # TODO: 한 루프에서 다 하도록 고쳐야함
+    counter = 0
     dq = deque((nodes[root], ))
     try:
         while node := dq.popleft():
-            print(node)
-            node.left = (left_counter := left_counter + 1)
-            if node.connected_node:
-                temp = filterfalse(lambda x: x.left, sorted(node.connected_node, reverse=True))
-                dq.extendleft(temp)
-    except IndexError:
-        pass
-
-    dq = deque((nodes[root], ))
-    try:
-        while node := dq.pop():
-            print(node)
-            node.right = (right_counter := right_counter - 1)
-            if node.connected_node:
-                temp = filterfalse(lambda x: x.right, node.connected_node)
-                dq.extend(temp)
+            counter += 1
+            if node.left == 0:
+                node.left = counter
+                to_extendleft = sorted(filterfalse(
+                    lambda x: x.left, node.connected_node
+                ), reverse=True)
+                if to_extendleft:
+                    dq.appendleft(node)
+                    dq.extendleft(to_extendleft)
+                else:
+                    node.right = (counter := counter + 1)
+            elif node.right == 0:
+                node.right = counter
     except IndexError:
         pass
 

@@ -15,10 +15,10 @@ def solution():
         )
 
     maximum = 0
+    minofnm = min(n, m)
     for x, y in product(range(n), range(m)):
-        for i in range(1, min(n, m)):
+        for i in range(0, minofnm):
             if x + i < n and y + i < m:
-                print(f'{(x,y)} : {nums[x][y]} , {nums[x + i][y + i]}')
                 if (num := square_check(nums, x, y, i)) > maximum:
                     maximum = num
     
